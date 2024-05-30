@@ -1,4 +1,4 @@
-name: CMake Build and Test
+name: Сборка проекта CMake и запуск Юнит-тестов
 
 on: [push]
 
@@ -8,10 +8,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: КЛОНИРОВАНИЕ РЕПОЗИТОРИЯ НА ВИРТУАЛЬНУЮ МАШИНУ ДЛЯ ИСПОЛНЕНИЯ...
       uses: actions/checkout@v2
 
-    - name: Set up CMake
+    - name: УСТАНОВКА "CMake"...
       uses: jwlawson/actions-setup-cmake@v1
 
     - name: СОЗДАЕМ ПАПКУ build...
