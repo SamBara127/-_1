@@ -8,7 +8,7 @@ CircularBuffer::CircularBuffer()
 	main_buff.capacity = 1;
 	main_buff.head = 0;
 	main_buff.tail = 0;
-	chuppaip
+	chuppaiprtrtr
 	std::cout << "     OK!\n";
 }
 
