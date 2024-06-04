@@ -10,7 +10,7 @@ CircularBuffer::CircularBuffer()
 	main_buff.tail = 0;
 	std::cout << "     OK!\n";
 	
-	# TEST_MERGE...
+	// TEST_MERGE...
 }
 
 CircularBuffer::~CircularBuffer()
