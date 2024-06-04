@@ -1,0 +1,62 @@
+name: Сборка проекта CMake и запуск Юнит-тестов
+
+on:
+  pull_request:
+    branches:
+      - main_branch  # Основная ветка выполнения
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: КЛОНИРОВАНИЕ РЕПОЗИТОРИЯ НА ВИРТУАЛЬНУЮ МАШИНУ ДЛЯ ИСПОЛНЕНИЯ...
+      uses: actions/checkout@v2
+
+    - name: УСТАНОВКА "CMake"...
+      uses: jwlawson/actions-setup-cmake@v1
+
+    - name: СОЗДАЕМ ПАПКУ build...
+      run: |
+        if [ ! -d "build" ]; then
+          mkdir build  
+        fi
+
+    - name: ГЕНЕРАЦИЯ ФАЙЛОВ СБОРКИ С ПОМОЩЬЮ CMAKE...
+      run: cmake -S . -B build
+
+    - name: СБОРКА ПРОЕКТА...
+      run: cmake --build build -- -j
+      continue-on-error: true
+      id: build_project
+
+    - name: ЗАПУСК ЮНИТ-ТЕСТОВ...
+      run: |
+        cd build/tests
+        ./my_tests
+      continue-on-error: true
+      id: run_tests
+
+    - name: ПРОВЕРКА РЕЗУЛЬТАТОВ
+      run: |
+        if [[ ${{ steps.build_project.outcome }} == 'failure' ]]; then
+          echo "Сборка не удалась, слияние отменяется."
+          exit 1
+        elif [[ ${{ steps.run_tests.outcome }} == 'failure' ]]; then
+          echo "Тесты не прошли, слияние отменяется."
+          exit 1
+        else
+          echo "Сборка и тесты прошли успешно, слияние продолжается."
+      id: test_results
+
+    - name: СЛИЯНИЕ ВЕТКИ test_merge В main
+      if: ${{ steps.test_results.outcome == 'success' }}
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git checkout main
+        git merge test_merge
+        git push origin main
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
