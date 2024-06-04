@@ -25,17 +25,38 @@ jobs:
 
     - name: ГЕНЕРАЦИЯ ФАЙЛОВ СБОРКИ С ПОМОЩЬЮ CMAKE...
       run: cmake -S . -B build
+      continue-on-error: true
+      id: cmake_configure
 
     - name: СБОРКА ПРОЕКТА...
       run: cmake --build build -- -j
+      continue-on-error: true
+      id: cmake_build
 
     - name: ЗАПУСК ЮНИТ-ТЕСТОВ...
       run: |
         cd build/tests
         ./my_tests
+      continue-on-error: true
+      id: run_tests
 
-    - name: СЛИЯНИЕ ВЕТКИ test_merge В main
-      if: ${{ steps.test_results.outcome == 'success' }}
+    - name: ПРОВЕРКА РЕЗУЛЬТАТОВ
+      run: |
+        if [ ${{ steps.cmake_configure.outcome }} == 'failure' ]; then
+          echo "Сборка не удалась, слияние отменяется."
+          exit 1
+        elif [ ${{ steps.cmake_build.outcome }} == 'failure' ]; then
+          echo "Сборка не удалась, слияние отменяется."
+          exit 1
+        elif [ ${{ steps.run_tests.outcome }} == 'failure' ]; then
+          echo "Тесты не прошли, слияние отменяется."
+          exit 1
+        else
+          echo "Сборка и тесты прошли успешно, слияние продолжается."
+      id: test_results
+
+    - name: СЛИЯНИЕ ВЕТКИ test_merge В main_branch
+      if: ${{ steps.test_results.conclusion == 'success' }}
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
