@@ -3,7 +3,7 @@ name: Сборка проекта CMake и запуск Юнит-тестов
 on:
   pull_request:
     branches:
-      - main_branch  # Основная ветка выполнения
+      - main  # Основная ветка выполнения
 
 jobs:
   build:
@@ -28,20 +28,26 @@ jobs:
 
     - name: СБОРКА ПРОЕКТА...
       run: cmake --build build -- -j
+      continue-on-error: true
+      id: build_project
 
     - name: ЗАПУСК ЮНИТ-ТЕСТОВ...
       run: |
         cd build/tests
         ./my_tests
-      continue-on-error: true  # Чтобы сборка не останавливалась при неуспешных тестах
+      continue-on-error: true
+      id: run_tests
 
-    - name: СООБЩЕНИЕ О РЕЗУЛЬТАТАХ
+    - name: ПРОВЕРКА РЕЗУЛЬТАТОВ
       run: |
-        if [ $? -ne 0 ]; then
+        if [[ ${{ steps.build_project.outcome }} == 'failure' ]]; then
+          echo "Сборка не удалась, слияние отменяется."
+          exit 1
+        elif [[ ${{ steps.run_tests.outcome }} == 'failure' ]]; then
           echo "Тесты не прошли, слияние отменяется."
           exit 1
         else
-          echo "Тесты прошли успешно, слияние продолжается."
+          echo "Сборка и тесты прошли успешно, слияние продолжается."
       id: test_results
 
     - name: СЛИЯНИЕ ВЕТКИ test_merge В main
