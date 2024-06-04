@@ -3,7 +3,7 @@ name: Сборка проекта CMake и запуск Юнит-тестов
 on:
   pull_request:
     branches:
-      - main  # Основная ветка выполнения
+      - main_branch  # Основная ветка выполнения
 
 jobs:
   build:
