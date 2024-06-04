@@ -11,6 +11,7 @@ CircularBuffer::CircularBuffer()
 	std::cout << "     OK!\n";
 	
 	// TEST ON MERGE BRANCHES
+	sdfsdfsdf
 }
 
 CircularBuffer::~CircularBuffer()
