@@ -9,6 +9,8 @@ CircularBuffer::CircularBuffer()
 	main_buff.head = 0;
 	main_buff.tail = 0;
 	std::cout << "     OK!\n";
+	
+	aghjhdfgdfggsfdg
 }
 
 CircularBuffer::~CircularBuffer()
