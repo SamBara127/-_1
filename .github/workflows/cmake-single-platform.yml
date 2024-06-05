@@ -42,17 +42,18 @@ jobs:
 
     - name: ПРОВЕРКА РЕЗУЛЬТАТОВ
       run: |
-        if [ ${{ steps.cmake_configure.outcome }} == 'failure' ]; then
+        if [[ "${{ steps.cmake_configure.outcome }}" == "failure" ]]; then
           echo "Сборка не удалась, слияние отменяется."
           exit 1
-        elif [ ${{ steps.cmake_build.outcome }} == 'failure' ]; then
+        elif [[ "${{ steps.cmake_build.outcome }}" == "failure" ]]; then
           echo "Сборка не удалась, слияние отменяется."
           exit 1
-        elif [ ${{ steps.run_tests.outcome }} == 'failure' ]; then
+        elif [[ "${{ steps.run_tests.outcome }}" == "failure" ]]; then
           echo "Тесты не прошли, слияние отменяется."
           exit 1
         else
           echo "Сборка и тесты прошли успешно, слияние продолжается."
+        fi
       id: test_results
 
     - name: СЛИЯНИЕ ВЕТКИ test_merge В main_branch
