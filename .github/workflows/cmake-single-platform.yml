@@ -56,6 +56,9 @@ jobs:
         fi
       id: test_results
 
+    - name: ПОЛУЧЕНИЕ ВСЕХ ВЕТОК
+      run: git fetch --all
+
     - name: СЛИЯНИЕ ВЕТКИ test_merge В main_branch
       if: ${{ steps.test_results.conclusion == 'success' }}
       run: |
